@@ -35,7 +35,6 @@ protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws S
 			dao.update(user);
 			resp.getWriter().print("<h1 style='color:green'>Password changed</h1>");
 			req.getRequestDispatcher("Login.html").include(req, resp);
-			
 		}
 		else {
 			resp.getWriter().print("<h1 style='color:red'>Invalid Details Can not set new Password</h1>");
