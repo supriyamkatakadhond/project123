@@ -25,14 +25,12 @@ public class RegisterUser extends HttpServlet {
 		String gender = req.getParameter("gender");
 		String password1 = req.getParameter("password1");
 		String password2 = req.getParameter("password2");
-		Date dob=Date.valueOf(req.getParameter("dob"));
-		int age=Period.between(dob.toLocalDate(), LocalDate.now()).getYears();
-		
-		if(password1.equals(password2))
-		{
-			if(age>18)
-			{
-				User user=new User();
+		Date dob = Date.valueOf(req.getParameter("dob"));
+		int age = Period.between(dob.toLocalDate(), LocalDate.now()).getYears();
+
+		if (password1.equals(password2)) {
+			if (age > 18) {
+				User user = new User();
 				user.setAge(age);
 				user.setDob(dob);
 				user.setEmail(email);
@@ -41,19 +39,18 @@ public class RegisterUser extends HttpServlet {
 				user.setLastName(lastName);
 				user.setMobile(mobile);
 				user.setPassword(password1);
-				
-				UserDao dao=new UserDao();
+
+				UserDao dao = new UserDao();
 				dao.save(user);
-				
-				resp.getWriter().print("<h1 style='color:green'>Account Created Succes</h1>");
+
+				resp.getWriter().print("<h1 style='color:green'>Account Created Success</h1>");
+				resp.getWriter().print("<h1 style='color:blue'>Your UserId is : "+user.getId()+" </h1>");
 				req.getRequestDispatcher("Home.html").include(req, resp);
-			}
-			else {
+			} else {
 				resp.getWriter().print("<h1 style='color:red'>You are not old enoght to create account</h1>");
 				req.getRequestDispatcher("Register.html").include(req, resp);
 			}
-		}
-		else {
+		} else {
 			resp.getWriter().print("<h1 style='color:red'>Password Miss Match</h1>");
 			req.getRequestDispatcher("Register.html").include(req, resp);
 		}
