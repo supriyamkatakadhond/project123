@@ -38,8 +38,8 @@
 <th><%=train.getTime()[train.getTime().length-1] %></th>
 <th><%=Arrays.toString(train.getPrice()) %></th>
 <th><%=Arrays.toString(train.getDays()) %></th>
-<th><a><button>Delete</button></a></th>
-<th><a><button>Edit</button></a></th>
+<th><a href="deletetrain?number=<%=train.getNumber()%>"><button>Delete</button></a></th>
+<th><a href="EditTrain.jsp?number=<%=train.getNumber()%>"><button>Edit</button></a></th>
 </tr>
 <%} %>
 </table>

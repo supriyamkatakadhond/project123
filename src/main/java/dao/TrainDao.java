@@ -25,4 +25,15 @@ public class TrainDao {
 		return manager.createQuery("select x from Train x").getResultList();
 	}
 
+	public void delete(int tnumber)
+	{
+		transaction.begin();
+		manager.remove(manager.find(Train.class, tnumber));
+		transaction.commit();
+	}
+	
+	public Train fetch(int number)
+	{
+		return manager.find(Train.class, number);
+	}
 }
