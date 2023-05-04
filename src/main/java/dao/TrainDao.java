@@ -36,4 +36,10 @@ public class TrainDao {
 	{
 		return manager.find(Train.class, number);
 	}
+	
+	public void update(Train train) {
+		transaction.begin();
+		manager.merge(train);
+		transaction.commit();
+	}
 }
