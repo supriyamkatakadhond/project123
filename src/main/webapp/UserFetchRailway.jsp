@@ -38,6 +38,7 @@
 <th><button>Book</button></th>
 </tr>
 <%} %>
-</table>
+</table><br>
+<a href="UserHome.html"><button>Back</button></a>
 </body>
 </html>
