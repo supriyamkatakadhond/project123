@@ -35,7 +35,7 @@
 <th><%=train.getTime()[0] %></th>
 <th><%=train.getTime()[train.getTime().length-1] %></th>
 <th><%=Arrays.toString(train.getDays()) %></th>
-<th><button>Book</button></th>
+<th><a href="BookTicket.jsp?tn=<%=train.getNumber() %>"><button>Book</button></a></th>
 </tr>
 <%} %>
 </table><br>
