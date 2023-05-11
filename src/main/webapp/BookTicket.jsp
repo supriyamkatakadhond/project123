@@ -32,7 +32,7 @@
 		Hello
 		<%=user.getFirstName() + " " + user.getLastName()%></h1>
 	<br>
-	<form action="" method="">
+	<form action="bookticket" method="post">
 	User Id: <input type="text" name="uid" value="<%=user.getId()%>" readonly="readonly"><br>
 	Train Number: <input type="text" name="tn" value="<%=trainnumber%>" readonly="readonly"><br>
 	From: <select name="from">
