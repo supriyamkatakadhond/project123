@@ -43,5 +43,7 @@
 </tr>
 <%} %>
 </table>
+<br>
+<a href="ManagementHome.html"><button>Back</button></a>
 </body>
 </html>

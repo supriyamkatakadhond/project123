@@ -38,83 +38,88 @@ public class BookTicket extends HttpServlet {
 			int numberOfSeats = Integer.parseInt(req.getParameter("seats"));
 			Date doj = Date.valueOf(req.getParameter("doj"));
 			Date dob = Date.valueOf(LocalDate.now());
-			if(numberOfSeats<=0)
-			{
+			if (numberOfSeats <= 0) {
 				resp.getWriter().print("<h1>Seat can not be less than 1</h1>");
 				req.getRequestDispatcher("UserHome.html").include(req, resp);
-			}
-			else{
-			if (from.equals(to)) {
-				resp.getWriter().print("<h1>Source and Destination can not be same</h1>");
-				req.getRequestDispatcher("UserHome.html").include(req, resp);
 			} else {
-				int fromPos = 0;
-				int toPos = 0;
-				for (int i = 0; i < train.getStations().length; i++) {
-					if (train.getStations()[i].equals(from)) {
-						fromPos = i;
-					}
-					if (train.getStations()[i].equals(to)) {
-						toPos = i;
-					}
-				}
-				if (fromPos > toPos) {
-					resp.getWriter().print("<h1>Select Valid Source and Destination</h1>");
+				if (from.equals(to)) {
+					resp.getWriter().print("<h1>Source and Destination can not be same</h1>");
 					req.getRequestDispatcher("UserHome.html").include(req, resp);
 				} else {
-					double price = Double.parseDouble(train.getPrice()[toPos])
-							- Double.parseDouble(train.getPrice()[fromPos]);
-					double amount=numberOfSeats*price;
-					
-					boolean flag=false;
-					for(String day:train.getDays())
-					{
-						if(day.equalsIgnoreCase(doj.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL,Locale.ENGLISH)))
-								{
-							flag=true;
-								}
+					int fromPos = 0;
+					int toPos = 0;
+					for (int i = 0; i < train.getStations().length; i++) {
+						if (train.getStations()[i].equals(from)) {
+							fromPos = i;
+						}
+						if (train.getStations()[i].equals(to)) {
+							toPos = i;
+						}
 					}
-					
-					if(Period.between(dob.toLocalDate(),doj.toLocalDate()).getDays()<0 || flag)
-					{
-						resp.getWriter().print("<h1>Train Not Available in the selected date </h1>");
+					if (fromPos > toPos) {
+						resp.getWriter().print("<h1>Select Valid Source and Destination</h1>");
 						req.getRequestDispatcher("UserHome.html").include(req, resp);
-					}
-					else {
-						if(user.getWallet()<amount)
-						{
-							resp.getWriter().print("<h1>Insufficient funds for booking ticket</h1>");
-							req.getRequestDispatcher("UserHome.html").include(req, resp);
-						}
-						else {
-							TrainTicket ticket=new TrainTicket();
-							ticket.setAmount(amount);
-							ticket.setDateOfBooking(dob);
-							ticket.setDateOfJourney(doj);
-							ticket.setFrom(from);
-							ticket.setNumberOfSeats(numberOfSeats);
-							ticket.setTo(to);
-							ticket.setTrainNumber(trainNumber);
-							ticket.setUser(user);
-							
-							dao.save(ticket);
-							
-							List<TrainTicket> tickets=user.getTickets();
-							if(tickets==null)
-							{
-								tickets=new ArrayList<>();
-							}
-							tickets.add(ticket);
-							user.setTickets(tickets);
-							UserDao dao2=new UserDao();
-							dao2.save(user);
-						}
-						
-					}
+					} else {
+						double price = Double.parseDouble(train.getPrice()[toPos])
+								- Double.parseDouble(train.getPrice()[fromPos]);
+						double amount = numberOfSeats * price;
 
+						boolean flag = true;
+						for (String day : train.getDays()) {
+							if (day.equalsIgnoreCase(
+									doj.toLocalDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH))) {
+								flag = false;
+							}
+						}
+
+						if (Period.between(dob.toLocalDate(), doj.toLocalDate()).getDays() < 0 || flag) {
+							resp.getWriter().print("<h1>Train Not Available in the selected date </h1>");
+							req.getRequestDispatcher("UserHome.html").include(req, resp);
+						} else {
+							if (user.getWallet() < amount) {
+								resp.getWriter().print("<h1>Insufficient funds for booking ticket</h1>");
+								req.getRequestDispatcher("UserHome.html").include(req, resp);
+							} else {
+								if (train.getSeat() < numberOfSeats) {
+									resp.getWriter().print("<h1>Seats not Available</h1>");
+									req.getRequestDispatcher("UserHome.html").include(req, resp);
+								} else {
+									TrainTicket ticket = new TrainTicket();
+									ticket.setAmount(amount);
+									ticket.setDateOfBooking(dob);
+									ticket.setDateOfJourney(doj);
+									ticket.setSource(from);
+									ticket.setNumberOfSeats(numberOfSeats);
+									ticket.setDestination(to);
+									ticket.setTrainNumber(trainNumber);
+									ticket.setUser(user);
+
+									dao.save(ticket);
+									
+									train.setSeat(train.getSeat()-numberOfSeats);
+									dao.update(train);
+									
+									
+									List<TrainTicket> tickets = user.getTickets();
+									if (tickets == null) {
+										tickets = new ArrayList<>();
+									}
+									tickets.add(ticket);
+									user.setTickets(tickets);
+									user.setWallet(user.getWallet() - amount);
+									UserDao dao2 = new UserDao();
+									dao2.update(user);
+
+									resp.getWriter().print("<h1>Ticket Booked Successfully</h1>");
+									req.getRequestDispatcher("UserHome.html").include(req, resp);
+								}
+							}
+
+						}
+
+					}
 				}
 			}
-		}
 		}
 	}
 }
